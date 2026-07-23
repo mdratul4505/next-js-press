@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import jwt, { JwtPayload } from "jsonwebtoken"
+import { jwtUtils } from './utils/jwt';
 
 const AUTH_ROUTE = ["/login", "/register"]
 const PUBLIC_ROUTE = ["/", "/news" ,"/login", "/register"]
@@ -10,16 +11,21 @@ const PUBLIC_ROUTE = ["/", "/news" ,"/login", "/register"]
 export async function proxy(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
 
-    // const cookeStore = await cookies();
+    const cookeStore = await cookies();
     // const accessToken = cookeStore.get("accessToken")
 
     const accessToken = request.cookies.get("accessToken")?.value
 
-    const decodedToken = accessToken ? jwt.decode(accessToken) as JwtPayload : null ;
+    const decodedToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null ;
     let userRole = null;
 
-    if(decodedToken){
-        userRole = decodedToken.role;
+    if(!decodedToken){
+        cookeStore.delete("accessToken");
+        return NextResponse.redirect( new URL("/login", request.url) )
+    }
+
+    if(decodedToken?.success && decodedToken.data){
+        userRole = (decodedToken.data as JwtPayload).role ;
     }
     if(accessToken && AUTH_ROUTE.includes(pathName)){
         if(userRole === "USER"){
