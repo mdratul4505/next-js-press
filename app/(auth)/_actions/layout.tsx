@@ -2,7 +2,7 @@ import { Navbar } from '@/components/shared/navbar'
 import { getMe } from '@/service/getme'
 import React from 'react'
 
-const DashboardLayout = async (
+const AuthLayout = async (
     {
         children,
     } : {
@@ -18,4 +18,4 @@ const DashboardLayout = async (
   )
 }
 
-export default DashboardLayout
+export default AuthLayout
