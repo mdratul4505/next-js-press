@@ -1,6 +1,20 @@
 "use server"
 
-export const loginAction = async (formData: FormData) =>{
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+
+type LoginState = {
+    success : true,
+    statusCode : true,
+    message : string,
+    data :{
+        accessToken : string,
+        refreshToken : string,
+    }
+
+}
+
+export const loginAction = async (prevstate : LoginState, formData: FormData) =>{
 console.log(formData)
 
 const email = formData.get("email");
@@ -10,7 +24,7 @@ const payload ={
     password
 }
 
-const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login` , {
+const res  = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login` , {
     method : "post",
     headers:{
         "content-Type" : "application/json"
@@ -18,6 +32,25 @@ const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login` , {
     body : JSON.stringify(payload)
 })
 
-const result = await res.json()
-console.log(result)
+const result  = await res.json()
+
+if(result.success){
+    const cookieStore = await cookies()
+    cookieStore.set("accessToken",result.data.accessToken ,{
+        httpOnly : true,
+        maxAge : 60 * 60 * 24,
+        sameSite : "lax",
+         
+    })
+
+    cookieStore.set("refreshToken",result.data.refreshToken ,{
+        httpOnly : true,
+        maxAge : 60 * 60 * 24 * 7,
+        sameSite : "lax",
+
+    })
+    redirect("/dashboard")
+}
+
+return result
 }
