@@ -40,6 +40,10 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect( new URL('/login' , request.url))
     }
 
+    if(pathName.startsWith("/dashboard")&& userRole !== "USER"){
+       return NextResponse.redirect( new URL('/' , request.url)) 
+    }
+
 //   return NextResponse.redirect(new URL('/', request.url))
  return NextResponse.next()
 }
