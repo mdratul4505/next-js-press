@@ -41,13 +41,13 @@ export async function proxy(request: NextRequest) {
     }
 
     if(pathName.startsWith("/dashboard")&& userRole !== "USER"){
-       return NextResponse.redirect( new URL('/' , request.url)) 
+       return NextResponse.redirect( new URL('/not-found' , request.url)) 
     }
     else if(pathName.startsWith("/admin-dashboard")&& userRole !== "ADMIN"){
-       return NextResponse.redirect( new URL('/' , request.url)) 
+       return NextResponse.redirect( new URL('/not-found' , request.url)) 
     }
     else if(pathName.startsWith("/author-dashboard")&& userRole !== "AUTHOR"){
-       return NextResponse.redirect( new URL('/' , request.url)) 
+       return NextResponse.redirect( new URL('/not-found' , request.url)) 
     }
 
 //   return NextResponse.redirect(new URL('/', request.url))
