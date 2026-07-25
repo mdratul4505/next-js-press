@@ -1,7 +1,7 @@
- 
-import { NewsCard } from "@/app/(publicGroup)/_components/news/NewsCard";
-import { IPost } from "@/lib/types";
+
 import { getPremiumNews } from "../../_actions/getPremiumNews";
+import { IPost } from "@/lib/types";
+import { NewsCard } from "./newsCard";
 
 export async function PremiumNewsList({
   searchParams,
