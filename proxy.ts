@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { jwtUtils } from './utils/jwt';
+import { getNewAccessToken } from './service/refreshToken';
 
 const AUTH_ROUTE = ["/login", "/register"]
 const PUBLIC_ROUTE = ["/", "/news" ,"/login", "/register"]
@@ -14,18 +15,45 @@ export async function proxy(request: NextRequest) {
     const cookeStore = await cookies();
     // const accessToken = cookeStore.get("accessToken")
 
-    const accessToken = request.cookies.get("accessToken")?.value
+    let accessToken = request.cookies.get("accessToken")?.value
+    const refreshToken = request.cookies.get("refreshToken")?.value
 
-    const decodedToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null ;
-    let userRole = null;
+    let decodedAccessToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null ;
 
-    if(!decodedToken){
-        cookeStore.delete("accessToken");
-        return NextResponse.redirect( new URL("/login", request.url) )
+    const decodedRefreshToken = refreshToken ? jwtUtils.verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET as string) : null ;
+
+    if(!decodedAccessToken?.success &&  decodedRefreshToken?.success){
+        const result = await getNewAccessToken()
+        if(result.success){
+            const newAccessToken = result.data.accessToken;
+            cookeStore.set("accessToken", newAccessToken,{
+                httpOnly : true,
+                maxAge : 60 * 60 * 24,
+                sameSite : "lax"
+            })
+            accessToken = newAccessToken
+            decodedAccessToken = accessToken
+  ? jwtUtils.verifyToken(
+      accessToken,
+      process.env.JWT_ACCESS_SECRET as string
+    )
+  : null;
+        }
+
     }
 
-    if(decodedToken?.success && decodedToken.data){
-        userRole = (decodedToken.data as JwtPayload).role ;
+
+    let userRole = null;
+
+    
+
+    if(!decodedAccessToken){
+        cookeStore.delete("accessToken");
+        // return NextResponse.redirect( new URL("/login", request.url) )
+    }
+
+    if(decodedAccessToken?.success && decodedAccessToken.data){
+        userRole = (decodedAccessToken.data as JwtPayload).role ;
     }
     if(accessToken && AUTH_ROUTE.includes(pathName)){
         if(userRole === "USER"){
@@ -42,9 +70,9 @@ export async function proxy(request: NextRequest) {
 
     const isPublic = PUBLIC_ROUTE.some((route)=> pathName === route || pathName.startsWith(route + "/")) ;
 
-    if(!accessToken && isPublic){
-        return NextResponse.redirect( new URL('/login' , request.url))
-    }
+    if(!accessToken && !isPublic){
+    return NextResponse.redirect( new URL('/login' , request.url))
+}
 
     if(pathName.startsWith("/dashboard")&& userRole !== "USER"){
        return NextResponse.redirect( new URL('/not-found' , request.url)) 
