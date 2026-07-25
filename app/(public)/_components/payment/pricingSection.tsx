@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckIcon } from "lucide-react";
 import { getSubscriptionStatus } from "../../_actions/getSubscriptionStatus";
-import { SubscribeButton } from "./SubscribeButton";
+import { SubscribeButton } from "./subcribeButton";
 
 export async function PricingSection() {
   const statusResult = await getSubscriptionStatus()
