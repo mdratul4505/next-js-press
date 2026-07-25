@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IPost } from "@/lib/types";
+
 import { MessageSquareIcon, SparklesIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -25,6 +26,7 @@ export function NewsCard({ post }: NewsCardProps) {
             alt={post.title}
             width={400}
             height={400}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             // fill
           />
         )}

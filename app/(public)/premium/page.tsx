@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { NewsSearchBar } from "../_components/news/NewsSearchBar";
-import { NewsSkeleton } from "../_components/news/NewsSkeleton";
-import { PremiumNewsList } from "../_components/news/PremiumNewsList";
+import { NewsSearchBar } from "../_components/news/newsSearchBar";
+import { NewsSkeleton } from "../_components/news/newsSkeleton";
+import { PremiumNewsList } from "../_components/news/premiumNewsList";
 
 const PremiumPage = async ({
   searchParams,
