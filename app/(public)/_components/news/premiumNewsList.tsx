@@ -9,7 +9,7 @@ export async function PremiumNewsList({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  const result = await getPremiumNews({ query });
+  const result = await getPremiumNews()
 
   if (!result.success || !result.data?.length) {
     return (
