@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewsCard } from "@/app/(publicGroup)/_components/news/NewsCard";
+// import { NewsCard } from "@/app/(publicGroup)/_components/news/NewsCard";
 import { IPost } from "@/lib/types";
+import { NewsCard } from "./newsCard";
 
 export async function PublicNewsList() {
 

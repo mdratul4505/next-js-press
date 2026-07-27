@@ -1,7 +1,4 @@
-import { Navbar } from '@/components/shared/navbar'
-import { getMe } from '@/service/getme'
-
-
+import SuspendedNavbar from '@/components/shared/navbar-server'
 import React from 'react'
 
 const PublicLayout = async(
@@ -11,10 +8,9 @@ const PublicLayout = async(
         children :React.ReactNode
     }
 ) => {
-    const user = await getMe()
   return (
     <div>
-        <Navbar user = {user}></Navbar>
+        <SuspendedNavbar />
     {children}
     </div>
   )

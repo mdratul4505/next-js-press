@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IPost } from "@/lib/types";
-import { MyPostCard } from "./MyPostCard";
+import { MyPostCard } from "./myPostCard";
 
 export async function MyPostsList() {
   const result = {

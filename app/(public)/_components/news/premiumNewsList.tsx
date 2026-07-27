@@ -1,7 +1,8 @@
 
-import { getPremiumNews } from "../../_actions/getPremiumNews";
+// import { getPremiumNews } from "../../_actions/getPremiumNews";
 import { IPost } from "@/lib/types";
 import { NewsCard } from "./newsCard";
+import { getPremiumNews } from "../../_actions/getPremiumNews";
 
 export async function PremiumNewsList({
   searchParams,
@@ -9,7 +10,7 @@ export async function PremiumNewsList({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  const result = await getPremiumNews()
+  const result = await getPremiumNews({query})
 
   if (!result.success || !result.data?.length) {
     return (

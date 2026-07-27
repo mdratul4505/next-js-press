@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server'
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { jwtUtils } from './utils/jwt';
 import { getNewAccessToken } from './service/refreshToken';
+import { getSubscriptionStatus } from './app/(public)/_actions/getSubscriptionStatus';
 
 const AUTH_ROUTE = ["/login", "/register"]
 const PUBLIC_ROUTE = ["/", "/news" ,"/login", "/register"]
@@ -83,6 +84,25 @@ export async function proxy(request: NextRequest) {
     else if(pathName.startsWith("/author-dashboard")&& userRole !== "AUTHOR"){
        return NextResponse.redirect( new URL('/not-found' , request.url)) 
     }
+
+    
+
+    if(pathName === "/premium"){
+        const subscriptionStatus = await getSubscriptionStatus();
+     const isActive = Boolean(
+    subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+  );
+        if(!isActive){
+    return NextResponse.redirect(new URL ("/payment", request.url))
+  }
+}
+
+//     if(pathName === "/payment"){
+
+//   if(isActive){
+//     return NextResponse.redirect(new URL ("/premium", request.url))
+//   }
+//     }
 
 //   return NextResponse.redirect(new URL('/', request.url))
  return NextResponse.next()

@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IPost } from "@/lib/types";
 import { MessageSquareIcon, SparklesIcon } from "lucide-react";
-import { PostFormDialog } from "./PostFormDialog";
+import { PostFormDialog } from "./postFormDialog";
+// import { PostFormDialog } from "./PostFormDialog";
 
 type MyPostCardProps = {
     post: IPost;
